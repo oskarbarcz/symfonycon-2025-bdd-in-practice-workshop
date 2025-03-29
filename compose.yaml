@@ -1,0 +1,26 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    depends_on:
+      database:
+        condition: service_healthy
+    ports: [ "80:80" ]
+    volumes:
+      - { type: bind, source: ., target: /app }
+  database:
+    image: 'mysql:8.2.0'
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: "password"
+      MYSQL_DATABASE: "at-cloud-sso"
+      MYSQL_USER: "user"
+      MYSQL_PASSWORD: "password"
+    healthcheck:
+      test: "/usr/bin/mysql --user=root --password=password --execute \"SHOW DATABASES;\""
+      interval: 2s
+      timeout: 20s
+      retries: 10
