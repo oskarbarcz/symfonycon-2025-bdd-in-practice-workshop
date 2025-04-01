@@ -8,15 +8,31 @@ services:
       database:
         condition: service_healthy
     ports: [ "80:80" ]
+    environment:
+      # PHP level cache
+      PHP_OPCACHE_ENABLE: "false"
+      PHP_APCU_ENABLE: 0
+      # Logs
+      CADDY_LOG_OUTPUT: "file var/log/caddy.log"
+      CADDY_LOG_LEVEL: "INFO"
+      FPM_ACCESS_LOG: "/var/log/php-fpm.access.log"
+      FPM_ERROR_LOG: "/var/log/php-fpm.error.log"
+      FPM_LOG_LEVEL: "notice"
+      PHP_ERROR_LOG: "/var/log/php.error.log"
+      PHP_LOG_LEVEL: "E_ALL"
+      # Application
+      APP_ENV: "dev"
+      APP_SECRET: "a9806d99cd5c1503d8af30c963c9411f"
+      # External services
+      DATABASE_URL: "mysql://user:password@database:3306/blog"
     volumes:
       - { type: bind, source: ., target: /app }
   database:
-    image: 'mysql:8.2.0'
-    ports:
-      - "3306:3306"
+    image: 'mysql:8.4'
+    ports: ["3306:3306"]
     environment:
       MYSQL_ROOT_PASSWORD: "password"
-      MYSQL_DATABASE: "at-cloud-sso"
+      MYSQL_DATABASE: "blog"
       MYSQL_USER: "user"
       MYSQL_PASSWORD: "password"
     healthcheck:
