@@ -6,7 +6,7 @@ RUN composer install
 
 FROM app AS development
 ENV APP_ENV="dev"
-RUN apk update && apk add git
+RUN apk update && apk save git
 ENTRYPOINT ["./docker/dev/entrypoint"]
 
 FROM app AS ci

@@ -6,6 +6,7 @@ namespace App\Controller\Post;
 
 use App\Controller\Post\Dto\CreatePostRequest;
 use App\Controller\Post\Dto\CreatePostResponse;
+use App\Entity\Post;
 use App\Repository\PostRepository;
 use Nelmio\ApiDocBundle\Attribute\Model;
 use OpenApi\Attributes as OA;
@@ -34,7 +35,7 @@ final class PostController extends AbstractController
     ): Response {
         $newPostId = Uuid::v4();
 
-        $createdPost = $this->repository->add($newPostId, $request);
+        $createdPost = $this->repository->save($newPostId, $request);
 
         return $this->json($createdPost, Response::HTTP_CREATED);
     }
@@ -57,7 +58,7 @@ final class PostController extends AbstractController
             return $this->json(['error' => 'Post not found'], Response::HTTP_NOT_FOUND);
         }
 
-        return $this->json($post);
+        return $this->json(CreatePostResponse::fromPost($post));
     }
 
     #[OA\Response(
@@ -73,6 +74,9 @@ final class PostController extends AbstractController
     {
         $posts = $this->repository->findAll();
 
-        return $this->json($posts);
+        return $this->json(array_map(
+            static fn (Post $post) => CreatePostResponse::fromPost($post),
+            $posts
+        ));
     }
 }

@@ -22,14 +22,19 @@ final class PostRepository extends ServiceEntityRepository
 
     public function add(Uuid $id, CreatePostRequest $request): Post
     {
-        $entityManager = $this->getEntityManager();
-
         $post = new Post(
             $id,
             $request->title,
             $request->content,
             $request->tags
         );
+
+        return $this->save($post);
+    }
+
+    public function save(Post $post): Post
+    {
+        $entityManager = $this->getEntityManager();
 
         $entityManager->persist($post);
         $entityManager->flush();
