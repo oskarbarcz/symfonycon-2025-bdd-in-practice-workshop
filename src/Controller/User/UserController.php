@@ -6,7 +6,6 @@ namespace App\Controller\User;
 
 use App\Controller\User\Dto\CreateUserRequest;
 use App\Controller\User\Dto\CreateUserResponse;
-use App\Entity\Comment;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Nelmio\ApiDocBundle\Attribute\Model;
@@ -15,7 +14,7 @@ use OpenApi\Attributes\JsonContent;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
-use Symfony\Component\PasswordHasher\PasswordHasherInterface;
+use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Uid\Uuid;
 
@@ -24,7 +23,7 @@ final class UserController extends AbstractController
 {
     public function __construct(
         private readonly UserRepository $userRepository,
-        private readonly PasswordHasherInterface $passwordHasher,
+        private readonly PasswordHasherFactoryInterface $passwordHasherFactory,
     ) {}
 
     #[OA\RequestBody(content: new Model(type: CreateUserRequest::class))]
@@ -40,7 +39,9 @@ final class UserController extends AbstractController
     ): Response {
         $newCommentId = Uuid::v4();
 
-        $hashedPassword = $this->passwordHasher->hash($request->password);
+        $passwordHasher = $this->passwordHasherFactory->getPasswordHasher(User::class);
+        $hashedPassword = $passwordHasher->hash($request->password);
+
         $user = new User($newCommentId, $request->email, $hashedPassword);
         $this->userRepository->save($user);
 
@@ -82,7 +83,7 @@ final class UserController extends AbstractController
         $users = $this->userRepository->findAll();
 
         return $this->json(array_map(
-            static fn (Comment $comment) => CreateUserResponse::fromUser($comment),
+            static fn (User $user) => CreateUserResponse::fromUser($user),
             $users
         ));
     }
