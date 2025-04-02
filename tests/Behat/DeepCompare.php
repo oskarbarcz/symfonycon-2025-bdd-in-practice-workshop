@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace assets;
+namespace App\Tests\Behat;
 
 use Symfony\Component\Uid\Uuid;
-use PHPUnit\Framework\Assert;
+use Webmozart\Assert\Assert;
 
 class DeepCompare
 {
     public static function compare(mixed $actual, mixed $expected): void
     {
         if ($expected === '@uuid') {
-            Assert::assertTrue(Uuid::isValid($actual));
+            Assert::true(Uuid::isValid($actual));
             return;
         }
 
@@ -20,10 +20,10 @@ class DeepCompare
             $actualDate = new \DateTimeImmutable($actual);
             $now = new \DateTimeImmutable();
 
-            Assert::assertLessThanOrEqual($now, $actualDate, 'Date should not be in the future');
+            Assert::lessThanEq($actualDate, $now, 'Date should not be in the future');
 
             $diffSeconds = abs($now->getTimestamp() - $actualDate->getTimestamp());
-            Assert::assertLessThan(60, $diffSeconds, 'Date should be within 1 minute from now');
+            Assert::lessThanEq($diffSeconds,60, 'Date should be within 1 minute from now');
 
             return;
         }
@@ -33,16 +33,16 @@ class DeepCompare
         }
 
         if (!is_array($actual) || !is_array($expected)) {
-            Assert::assertSame($expected, $actual);
+            Assert::eq($actual, $expected);
             return;
         }
 
         $actualKeys = array_keys($actual);
         $expectedKeys = array_keys($expected);
 
-        Assert::assertSameSize($expectedKeys, $actualKeys);
+        Assert::count($expectedKeys, count($actualKeys));
         foreach ($expectedKeys as $key) {
-            Assert::assertArrayHasKey($key, $actual);
+            Assert::keyExists($actual, $key);
             self::compare($actual[$key], $expected[$key]);
         }
     }
