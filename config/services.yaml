@@ -10,3 +10,6 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
+    App\Tests\Behat\ApiContext:
+      arguments:
+        $httpClient: '@http_client'

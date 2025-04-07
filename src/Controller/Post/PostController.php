@@ -35,9 +35,9 @@ final class PostController extends AbstractController
     ): Response {
         $newPostId = Uuid::v4();
 
-        $createdPost = $this->repository->save($newPostId, $request);
+        $createdPost = $this->repository->add($newPostId, $request);
 
-        return $this->json($createdPost, Response::HTTP_CREATED);
+        return $this->json(CreatePostResponse::fromPost($createdPost), Response::HTTP_CREATED);
     }
 
     #[OA\Response(

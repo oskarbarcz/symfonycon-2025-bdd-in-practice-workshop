@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
 bin/console doctrine:migrations:migrate --no-interaction
-#bin/console doctrine:fixtures:load --no-interaction
+bin/console doctrine:fixtures:load --no-interaction
 
 echo "
  [OK] Migrations applied and fixtures loaded successfully

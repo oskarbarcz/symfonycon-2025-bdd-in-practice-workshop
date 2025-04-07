@@ -35,14 +35,14 @@ class Post
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'post', cascade: ['persist', 'remove'])]
     private Collection $comments;
 
-    public function __construct(Uuid $id, string $title, string $content, array $tags)
+    public function __construct(Uuid $id, string $title, string $content, array $tags, \DateTimeImmutable $createdAt)
     {
         $this->id = $id;
         $this->title = $title;
         $this->content = $content;
         $this->tags = $tags;
+        $this->createdAt = $createdAt;
 
-        $this->createdAt = new \DateTimeImmutable();
         $this->comments = new ArrayCollection();
     }
 

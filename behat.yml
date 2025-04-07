@@ -1,0 +1,9 @@
+default:
+    suites:
+        default:
+            contexts:
+                - App\Tests\Behat\DemoContext
+                - App\Tests\Behat\ApiContext
+    extensions:
+        FriendsOfBehat\SymfonyExtension: ~
+        DAMA\DoctrineTestBundle\Behat\ServiceContainer\DoctrineExtension: ~

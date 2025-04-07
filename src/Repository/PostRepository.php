@@ -26,7 +26,8 @@ final class PostRepository extends ServiceEntityRepository
             $id,
             $request->title,
             $request->content,
-            $request->tags
+            $request->tags,
+            new \DateTimeImmutable(),
         );
 
         return $this->save($post);

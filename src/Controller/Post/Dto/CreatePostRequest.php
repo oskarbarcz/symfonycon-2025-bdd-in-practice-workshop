@@ -20,5 +20,6 @@ class CreatePostRequest
     public string $content;
 
     #[OA\Property(type: 'array', items: new Items(type: 'string'), example: ['php', 'symfony', 'api'])]
+    #[Assert\NotBlank]
     public array $tags;
 }

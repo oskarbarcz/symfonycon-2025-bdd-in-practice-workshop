@@ -21,7 +21,7 @@ services:
       PHP_ERROR_LOG: "/var/log/php.error.log"
       PHP_LOG_LEVEL: "E_ALL"
       # Application
-      APP_ENV: "dev"
+      APP_ENV: "test"
       APP_SECRET: "a9806d99cd5c1503d8af30c963c9411f"
       # External services
       DATABASE_URL: "mysql://user:password@database:3306/blog"
